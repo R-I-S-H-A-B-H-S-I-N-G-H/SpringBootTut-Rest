@@ -2,9 +2,20 @@ package com.example.Rest.user;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Component;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
+@Component
 public class User {
     private Integer id;
+
+    // @Size(min = 2)
+    @NotBlank
     private String name;
+    @Past
     private LocalDate dob;
 
     public User() {

@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class UserResource {
     @Autowired
@@ -23,6 +25,16 @@ public class UserResource {
         return service.findAll();
     }
 
+    // POST
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User savedUser = service.createUser(user);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
     // GET /users/id
     @GetMapping("/users/{id}")
     public User getUserbyId(@PathVariable int id) {
@@ -32,13 +44,10 @@ public class UserResource {
         return user;
     }
 
-    // POST
-    @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = service.save(user);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
-                .toUri();
+    // DELETE USER
+    @DeleteMapping("/users/{id}")
+    public void deleteUserbyId(@PathVariable int id) {
+        service.deleteById(id);
 
-        return ResponseEntity.created(location).build();
     }
 }

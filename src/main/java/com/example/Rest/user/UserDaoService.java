@@ -3,6 +3,7 @@ package com.example.Rest.user;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,14 @@ public class UserDaoService {
         return null;
     }
 
-    public User save(User user) {
+    public User createUser(User user) {
         user.setId(users.size() + 1);
         users.add(user);
         return user;
+    }
+
+    public void deleteById(int id) {
+        Predicate<? super User> predicate = user -> user.getId().equals(id);
+        users.removeIf(predicate);
     }
 }
