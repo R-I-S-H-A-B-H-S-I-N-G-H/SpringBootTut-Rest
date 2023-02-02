@@ -2,18 +2,17 @@ package com.example.Rest.user;
 
 import java.time.LocalDate;
 
-import org.springframework.stereotype.Component;
+import org.hibernate.validator.constraints.UniqueElements;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
-@Component
 public class User {
     private Integer id;
 
-    // @Size(min = 2)
-    @NotBlank
+    @Size(min = 2, max = 200)
     private String name;
     @Past
     private LocalDate dob;

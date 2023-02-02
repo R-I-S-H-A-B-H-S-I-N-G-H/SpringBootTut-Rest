@@ -8,12 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.example.Rest.user.UserV2.UserV2DaoServices;
+import com.example.Rest.user.UserV2.Userv2;
+
 import jakarta.validation.Valid;
 
 @RestController
 public class UserResource {
     @Autowired
     private UserDaoService service;
+
+    @Autowired
+    private UserV2DaoServices servicesv2;
 
     // public UserResource(UserDaoService service) {
     // this.service = service;
@@ -40,14 +46,40 @@ public class UserResource {
     public User getUserbyId(@PathVariable int id) {
         User user = service.findById(id);
         if (user == null)
-            throw new UserNotFoundException("id :" + id);
+            throw new UserNotFoundException("this id is not present id :" + id);
         return user;
     }
 
     // DELETE USER
     @DeleteMapping("/users/{id}")
-    public void deleteUserbyId(@PathVariable int id) {
+    public void deleteUserbyIdV2(@PathVariable int id) {
         service.deleteById(id);
 
     }
+
+    // Version 2
+    @GetMapping("/v2/users")
+    public List<Userv2> getAllUsersV2() {
+        return servicesv2.findAll();
+    }
+
+    // POST
+    @PostMapping("/v2/users")
+    public ResponseEntity<Userv2> createUserV2(@Valid @RequestBody Userv2 user) {
+        Userv2 savedUser = servicesv2.createUser(user);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
+    // GET /users/id
+    @GetMapping("/v2/users/{id}")
+    public Userv2 getUserbyIdV2(@PathVariable int id) {
+        Userv2 user = servicesv2.findById(id);
+        if (user == null)
+            throw new UserNotFoundException("this id is not present id :" + id);
+        return user;
+    }
+
 }
